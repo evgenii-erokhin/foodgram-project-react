@@ -1,17 +1,17 @@
 from django.contrib import admin
 
-from users.models import User, Follow
+from users.models import User, Subscription
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'email')
+    list_display = ('id', 'first_name', 'last_name', 'email')
     search_fields = ('first_name',)
     list_filter = ('email', 'first_name')
 
 
-class FollowAdmin(admin.ModelAdmin):
+class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('user', 'author')
 
 
 admin.site.register(User, UserAdmin)
-admin.site.register(Follow, FollowAdmin)
+admin.site.register(Subscription, SubscriptionAdmin)

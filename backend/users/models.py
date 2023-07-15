@@ -29,10 +29,10 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return f'Пользователь {self.first_name}'
+        return self.first_name
 
 
-class Subscribe(models.Model):
+class Subscription(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -50,5 +50,5 @@ class Subscribe(models.Model):
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [models.UniqueConstraint(
-            fields=['user', 'author'], name='unique_followers'
+            fields=['user', 'author'], name='unique_subscriber'
         )]
