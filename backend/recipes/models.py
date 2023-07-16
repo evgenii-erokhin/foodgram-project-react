@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator
 from users.models import User
 
 
-class Ingrediet(models.Model):
+class Ingredient(models.Model):
     '''Модель ингредиента'''
     name = models.CharField(
         'Название ингридиента',
@@ -69,9 +69,9 @@ class Recipe(models.Model):
         'Описание',
         max_length=1000,
     )
-    ingrediets = models.ManyToManyField(
-        Ingrediet,
-        through='IngredietRecipes',
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through='IngredientRecipes',
         related_name='recipes',
         verbose_name='Ингредиенты'
     )
@@ -95,7 +95,7 @@ class Recipe(models.Model):
         return self.name
 
 
-class IngredietRecipes(models.Model):
+class IngredientRecipes(models.Model):
     '''Промежуточная модель для связи ингридиента и рецепта'''
     recipe = models.ForeignKey(
         Recipe,
@@ -104,7 +104,7 @@ class IngredietRecipes(models.Model):
         verbose_name='Рецепт'
     )
     ingredient = models.ForeignKey(
-        Ingrediet,
+        Ingredient,
         on_delete=models.CASCADE,
         related_name='amount_ingredients',
         verbose_name='Ингредиент'
