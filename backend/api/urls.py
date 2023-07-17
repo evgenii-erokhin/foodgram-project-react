@@ -11,5 +11,5 @@ router_v1.register(r'ingredients', IngredientViewSet, basename='ingredient')
 
 
 urlpatterns = [
-    path('v1/', include(router_v1.urls)),
+    path('', include(router_v1.urls)),
 ]
