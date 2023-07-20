@@ -1,8 +1,8 @@
 from api.utils import Base64ImageField
 from django.contrib.auth import get_user_model
 from django.db.models import F
-from recipes.models import (Favourite, Ingredient, IngredientRecipes, Recipe,
-                            Tag)
+from recipes.models import (Ingredient, IngredientRecipes, Recipe,
+                            Tag, Favorite)
 from rest_framework import serializers
 from rest_framework.fields import IntegerField, SerializerMethodField
 from users.models import Subscription
@@ -91,7 +91,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
-        return user.favourites.filter(recipe=obj).exists()
+        return user.favorites.filter(recipe=obj).exists()
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
@@ -136,7 +136,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                                     context=context).data
 
 
-class RecipeFavouriteSerializer(serializers.ModelSerializer):
+class RecipeFavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
             'id',
@@ -147,10 +147,10 @@ class RecipeFavouriteSerializer(serializers.ModelSerializer):
         model = Recipe
 
 
-class FavouriteSerializer(serializers.ModelSerializer):
+class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
             'user',
             'recipe'
         )
-        model = Favourite
+        model = Favorite

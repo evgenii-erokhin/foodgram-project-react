@@ -1,9 +1,9 @@
 from django.contrib import admin
-from recipes.models import (Favourite, Ingredient, IngredientRecipes, Recipe,
+from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
 
 
-class FavouriteAdmin(admin.ModelAdmin):
+class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
 
 
@@ -29,7 +29,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'color', 'slug')
 
 
-admin.site.register(Favourite, FavouriteAdmin)
+admin.site.register(Favorite, FavoriteAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(IngredientRecipes, IngredientRecipesAdmin)
 admin.site.register(Recipe, RecipeAdmin)

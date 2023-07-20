@@ -1,8 +1,8 @@
-from api.serializers import (FavouriteSerializer, IngredientSerializer,
-                             RecipeFavouriteSerializer, RecipeReadSerializer,
+from api.serializers import (FavoriteSerializer, IngredientSerializer,
+                             RecipeFavoriteSerializer, RecipeReadSerializer,
                              RecipeWriteSerializer, TagSerializer)
 from django.shortcuts import get_object_or_404
-from recipes.models import Favourite, Ingredient, Recipe, Tag
+from recipes.models import Favorite, Ingredient, Recipe, Tag
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS
@@ -26,18 +26,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=pk)
 
         if request.method == 'POST':
-            serializer = FavouriteSerializer(
+            serializer = FavoriteSerializer(
                 data={'user': user.id, 'recipe': recipe.id})
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            fav_recipe_serializer = RecipeFavouriteSerializer(recipe)
+            fav_recipe_serializer = RecipeFavoriteSerializer(recipe)
             return Response(
                 fav_recipe_serializer.data,
                 status=status.HTTP_201_CREATED
             )
 
         favorite_recipe = get_object_or_404(
-            Favourite, user=user, recipe=recipe)
+            Favorite, user=user, recipe=recipe)
         favorite_recipe.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

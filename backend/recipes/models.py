@@ -128,18 +128,18 @@ class IngredientRecipes(models.Model):
                 f'{self.ingredient.measurement_unit}')
 
 
-class Favourite(models.Model):
+class Favorite(models.Model):
     '''Модель для избранных рецептов'''
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='favourites',
+        related_name='favorites',
         verbose_name='Пользователь'
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favourites',
+        related_name='favorites',
         verbose_name='Рецепт'
     )
 
