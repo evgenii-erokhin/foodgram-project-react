@@ -1,11 +1,13 @@
 from api.utils import Base64ImageField
 from django.contrib.auth import get_user_model
 from django.db.models import F
-from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
-                            ShoppingCart, Tag)
 from rest_framework import serializers
 from rest_framework.fields import IntegerField, SerializerMethodField
+from djoser.serializers import UserSerializer
+
 from users.models import Subscription
+from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
+                            ShoppingCart, Tag)
 
 User = get_user_model()
 
@@ -30,8 +32,8 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
 
 
-class UserSerializer(serializers.ModelSerializer):
-    # is_subscribed = SerializerMethodField()
+class UserSerializer(UserSerializer):
+    is_subscribed = SerializerMethodField()
 
     class Meta:
         fields = (
@@ -40,19 +42,19 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'first_name',
             'last_name',
-            # 'is_subscribed'
+            'is_subscribed'
 
         )
         model = User
 
-    # def get_is_subscribed(self, obj):
-    #     user = self.context.get('request').user
-    #     if request is None or request.user.is_anonymous:
-    #         return False
-    #     return Subscription.objects.filter(
-    #         user=request,
-    #         author=obj
-    #     ).exists()
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        if user is None or user.is_anonymous:
+            return False
+        return Subscription.objects.filter(
+            user=user,
+            author=obj
+        ).exists()
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
@@ -104,7 +106,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 class RecipeWriteSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
                                               many=True)
-    # author = UserSerializer(read_only=True)
+    author = UserSerializer(read_only=True)
     ingredients = IngredientRecipeSerializer(many=True)
     image = Base64ImageField()
 

@@ -13,8 +13,8 @@ from rest_framework.response import Response
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
 
-    # def perform_create(self, serializer):
-    #     return serializer.save(author=self.request.user)
+    def perform_create(self, serializer):
+        return serializer.save(author=self.request.user)
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
