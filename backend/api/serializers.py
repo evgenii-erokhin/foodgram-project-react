@@ -31,7 +31,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    is_subscribed = SerializerMethodField()
+    # is_subscribed = SerializerMethodField()
 
     class Meta:
         fields = (
@@ -45,14 +45,14 @@ class UserSerializer(serializers.ModelSerializer):
         )
         model = User
 
-    def is_subscribed(self, obj):
-        request = obj.context.get('request').user
-        if request is None or request.user.is_anonymous:
-            return False
-        return Subscription.objects.filter(
-            user=request,
-            author=obj
-        ).exists()
+    # def get_is_subscribed(self, obj):
+    #     user = self.context.get('request').user
+    #     if request is None or request.user.is_anonymous:
+    #         return False
+    #     return Subscription.objects.filter(
+    #         user=request,
+    #         author=obj
+    #     ).exists()
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
