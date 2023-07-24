@@ -12,13 +12,15 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name', )
 
 
-class IngredientRecipesAdmin(admin.ModelAdmin):
-    list_display = ('recipe', 'ingredient', 'amount')
+class IngredientRecipeInline(admin.TabularInline):
+    model = IngredientRecipes
+    extra = 1
 
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'author')
     list_filter = ('author', 'name', 'tags')
+    inlines = [IngredientRecipeInline]
 
 
 class ShoppingCartAdmin(admin.ModelAdmin):
@@ -31,7 +33,6 @@ class TagAdmin(admin.ModelAdmin):
 
 admin.site.register(Favorite, FavoriteAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(IngredientRecipes, IngredientRecipesAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(ShoppingCart, ShoppingCartAdmin)
 admin.site.register(Tag, TagAdmin)
