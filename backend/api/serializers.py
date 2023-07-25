@@ -19,6 +19,7 @@ class UserSerializer(UserSerializer):
     is_subscribed = SerializerMethodField()
 
     class Meta:
+        model = User
         fields = (
             'email',
             'id',
@@ -28,7 +29,6 @@ class UserSerializer(UserSerializer):
             'is_subscribed'
 
         )
-        model = User
 
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
@@ -43,8 +43,8 @@ class UserSerializer(UserSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     '''Сериалайзер для модели Ingredient.'''
     class Meta:
-        fields = '__all__'
         model = Ingredient
+        fields = '__all__'
 
 
 class IngredientRecipeReadSerializer(serializers.ModelSerializer):
@@ -59,8 +59,8 @@ class IngredientRecipeReadSerializer(serializers.ModelSerializer):
         )
 
     class Meta:
-        fields = ('id', 'name', 'amount', 'measurement_unit')
         model = IngredientRecipes
+        fields = ('id', 'name', 'amount', 'measurement_unit')
 
 
 class IngredientRecipeWriteSerializer(serializers.ModelSerializer):
@@ -71,8 +71,8 @@ class IngredientRecipeWriteSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
 
     class Meta:
-        fields = ('id', 'amount')
         model = IngredientRecipes
+        fields = ('id', 'amount')
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -80,8 +80,8 @@ class TagSerializer(serializers.ModelSerializer):
     Сериалайзер для модели Tag.
     '''
     class Meta:
-        fields = '__all__'
         model = Tag
+        fields = '__all__'
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
@@ -99,6 +99,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = SerializerMethodField()
 
     class Meta:
+        model = Recipe
         fields = (
             'id',
             'tags',
@@ -111,7 +112,6 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'text',
             'cooking_time',
         )
-        model = Recipe
 
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
@@ -138,6 +138,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
 
     class Meta:
+        model = Recipe
         fields = (
             'id',
             'tags',
@@ -148,7 +149,6 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'text',
             'cooking_time',
         )
-        model = Recipe
 
     def create_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
@@ -189,13 +189,13 @@ class RecipeFavoriteSerializer(serializers.ModelSerializer):
     Используется для отображения ответа при добавлении рецепта в избранное.
     '''
     class Meta:
+        model = Recipe
         fields = (
             'id',
             'name',
             'image',
             'cooking_time'
         )
-        model = Recipe
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
@@ -204,11 +204,11 @@ class FavoriteSerializer(serializers.ModelSerializer):
     Испльзуется для создание связей избранных рецептов пользователя.
     '''
     class Meta:
+        model = Favorite
         fields = (
             'user',
             'recipe'
         )
-        model = Favorite
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
@@ -217,11 +217,11 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
     Используется для формирования карзины покупок пользователя.
     '''
     class Meta:
+        model = ShoppingCart
         fields = (
             'user',
             'recipe'
         )
-        model = ShoppingCart
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
@@ -230,11 +230,11 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     Используется на запись при подписке на пользователя.
     '''
     class Meta:
+        model = Subscription
         fields = (
             'user',
             'author'
         )
-        model = Subscription
 
 
 class SubscriptionReadSerializer(serializers.ModelSerializer):
@@ -247,6 +247,7 @@ class SubscriptionReadSerializer(serializers.ModelSerializer):
     recipes_count = SerializerMethodField()
 
     class Meta:
+        model = User
         fields = (
             'email',
             'id',
@@ -257,9 +258,9 @@ class SubscriptionReadSerializer(serializers.ModelSerializer):
             'recipes',
             'recipes_count'
         )
-        model = User
 
     def get_is_subscribed(self, obj):
+        print(self.context.get('request'))
         user = self.context.get('request').user
         if user is None or user.is_anonymous:
             return False

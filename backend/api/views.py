@@ -1,23 +1,30 @@
-from api.serializers import (FavoriteSerializer, IngredientSerializer,
-                             RecipeFavoriteSerializer, RecipeReadSerializer,
-                             RecipeWriteSerializer, ShoppingCartSerializer,
-                             SubscriptionReadSerializer,
-                             SubscriptionSerializer, TagSerializer,
-                             UserSerializer)
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from recipes.models import (Favorite, Ingredient, Recipe, ShoppingCart, Tag)
-from users.models import Subscription
+from djoser.views import UserViewSet
+from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
 
+from api.serializers import (FavoriteSerializer, IngredientSerializer,
+                             RecipeFavoriteSerializer, RecipeReadSerializer,
+                             RecipeWriteSerializer, ShoppingCartSerializer,
+                             SubscriptionReadSerializer,
+                             SubscriptionSerializer, TagSerializer,
+                             UserSerializer)
+from users.models import Subscription
+
 User = get_user_model()
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    '''
+    Вьюсет для работы с рецептами.
+    Позволяет добавять/удалять рецепты в "Избранное"
+    и в "Корзину покупок".
+    '''
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
@@ -36,6 +43,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post', 'delete'])
     def favorite(self, request, pk):
+        '''
+        Метод "favorite" позволяет текущему пользователю
+        в зависимости от метода запроса добавить/удалить
+        рецепт в список "Избранное".
+        '''
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
 
@@ -57,6 +69,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post', 'delete'])
     def shopping_cart(self, request, pk):
+        '''
+        Метод "shopping_cart" позволяет текущему пользователю
+        в зависимости от запроса добавить/удалить ингредиенты
+        рецепта в "Корзину покупок".
+        '''
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
 
@@ -79,23 +96,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 
 class TagViewSet(viewsets.ModelViewSet):
+    '''Вьюсет для работы с тегами'''
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
+    '''Вьюсет для работы с ингредиентами'''
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @action(detail=True, methods=['post', 'delete'])
-    def subscribe(self, request, pk):
+    @action(detail=True,  methods=['post', 'delete'])
+    def subscribe(self, request, id):
+        '''
+        Метод "subscribe" позволяет текущему пользователю
+        подписаться/отписаться на автора рецепта.
+        '''
         user = request.user
-        author = get_object_or_404(User, id=pk)
+        author = get_object_or_404(User, id=id)
         if request.method == 'POST':
             serializer = SubscriptionSerializer(
                 data={
@@ -122,17 +145,20 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(
             status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=False, methods=['get'])
     def subscriptions(self, request):
+        '''
+        Метод "subscriptions" возвращает пользователей,
+        на которых подписан текущий пользователь.
+        В выдачу добавляются рецепты.
+        '''
         user = request.user
-        authors = User.objects.filter(subscriber=user)
-        return print(authors)
+        authors = User.objects.filter(subscribing__user=user)
 
-    @action(detail=False, url_path='me', url_name='me')
-    def get_me_page(self, request):
-        # UserSerializer
-        user = request.user
-        serializer = UserSerializer(
-            user, context={'request': request}
+        paged_queryset = self.paginate_queryset(authors)
+        serializer = SubscriptionReadSerializer(
+            paged_queryset,
+            context={'request': request},
+            many=True
         )
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
