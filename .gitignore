@@ -133,3 +133,6 @@ dmypy.json
 
 # media
 /backend/media
+
+# .txt files
+*.txt

@@ -1,7 +1,8 @@
+from django.db.models import Sum
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
+
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -15,6 +16,8 @@ from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              SubscriptionSerializer, TagSerializer,
                              UserSerializer)
 from users.models import Subscription
+from recipes.models import (Favorite, Ingredient, Recipe,
+                            ShoppingCart, Tag)
 
 User = get_user_model()
 
@@ -93,6 +96,35 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ShoppingCart, user=user, recipe=recipe)
         shopping_cart.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=['get'])
+    def download_shopping_cart(self, request):
+        '''
+        Метод "download_shopping_cart" позволяет скачать файл
+        со списком покупок.
+        '''
+        ingredient_lst = ShoppingCart.objects.filter(
+            user=request.user
+            ).values_list(
+            'recipe_id__ingredients__name',
+            'recipe_id__ingredients__measurement_unit',
+            Sum('recipe_id__ingredients__amount_ingredients__amount'))
+        print('ВЫВОД', set(ingredient_lst))
+        shopping_list = []
+        ingredient_lst = set(ingredient_lst)
+        print('ВЫВОД ДВА', set(ingredient_lst))
+        for ingredient in ingredient_lst:
+            name = ingredient[0]
+            measurement_unit = ingredient[1]
+            amount = ingredient[2]
+            shopping_list.append(f'{name} ({measurement_unit}) - {amount}')
+        print('\n'.join(shopping_list))
+        shoping_lst_convert = '\n'.join(shopping_list)
+
+        with open('shopping_list.txt', 'w+', encoding='utf-8') as shopping_lst:
+            shopping_lst.write(shoping_lst_convert)
+
+        return
 
 
 class TagViewSet(viewsets.ModelViewSet):
