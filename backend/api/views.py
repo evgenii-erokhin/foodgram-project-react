@@ -1,6 +1,6 @@
 from django.db.models import Sum
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, HttpResponse
 from djoser.views import UserViewSet
 
 from rest_framework import status, viewsets
@@ -109,22 +109,23 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'recipe_id__ingredients__name',
             'recipe_id__ingredients__measurement_unit',
             Sum('recipe_id__ingredients__amount_ingredients__amount'))
-        print('ВЫВОД', set(ingredient_lst))
-        shopping_list = []
+
+        shopping_list = ['Список покупок:']
         ingredient_lst = set(ingredient_lst)
-        print('ВЫВОД ДВА', set(ingredient_lst))
+
         for ingredient in ingredient_lst:
             name = ingredient[0]
             measurement_unit = ingredient[1]
             amount = ingredient[2]
             shopping_list.append(f'{name} ({measurement_unit}) - {amount}')
-        print('\n'.join(shopping_list))
-        shoping_lst_convert = '\n'.join(shopping_list)
 
-        with open('shopping_list.txt', 'w+', encoding='utf-8') as shopping_lst:
-            shopping_lst.write(shoping_lst_convert)
+        shopping_lst_convert = '\n'.join(shopping_list)
 
-        return
+        response = HttpResponse(shopping_lst_convert,
+                                content_type='text/plain')
+        response['Content-Disposition'] = \
+            'attachment; filename="shopping_list.txt"'
+        return response
 
 
 class TagViewSet(viewsets.ModelViewSet):
