@@ -289,7 +289,10 @@ class SubscriptionReadSerializer(serializers.ModelSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        print(self.context.get('request'))
+        '''
+        Метод который возвращает булево значение,
+        которое показывает подписан ли полльзователь на автора рецепта.
+        '''
         user = self.context.get('request').user
         if user is None or user.is_anonymous:
             return False
@@ -299,4 +302,7 @@ class SubscriptionReadSerializer(serializers.ModelSerializer):
         ).exists()
 
     def get_recipes_count(self, obj):
+        '''Метод возвращает количество рецептов у автора рецептов
+          на которого подписался пользователь.
+          '''
         return obj.recipes.count()

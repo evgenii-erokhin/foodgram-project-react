@@ -1,5 +1,6 @@
 from django.db.models import Sum
 from django.contrib.auth import get_user_model
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404, HttpResponse
 from djoser.views import UserViewSet
 
@@ -32,6 +33,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     '''
     pagination_class = PageNumberPagination
     permission_classes = (IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('tags')
 
     def get_queryset(self):
         recipes = Recipe.objects.prefetch_related(
