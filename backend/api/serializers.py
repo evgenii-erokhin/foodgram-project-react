@@ -1,6 +1,7 @@
 from api.utils import Base64ImageField
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from rest_framework.fields import SerializerMethodField
 from djoser.serializers import UserSerializer
 
@@ -151,6 +152,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         )
 
     def create_ingredients(self, ingredients, recipe):
+        '''Метод создания ингредиентов с количеством ингредиентов.'''
         for ingredient in ingredients:
             ingredients, status = IngredientRecipes.objects.get_or_create(
                 recipe=recipe,
@@ -209,6 +211,13 @@ class FavoriteSerializer(serializers.ModelSerializer):
             'user',
             'recipe'
         )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Favorite.objects.all(),
+                fields=['user', 'recipe'],
+                message='Вы уже добавили этот рецепт в избранное'
+            )
+        ]
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
@@ -222,6 +231,13 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
             'user',
             'recipe'
         )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=ShoppingCart.objects.all(),
+                fields=['user', 'recipe'],
+                message='Вы уже добавили этот рецепт в корзину покупок'
+            )
+        ]
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
@@ -235,6 +251,19 @@ class SubscriptionSerializer(serializers.ModelSerializer):
             'user',
             'author'
         )
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Subscription.objects.all(),
+                fields=['user', 'author'],
+                message='Дважды на одного пользователя нельзя подписаться'
+            )
+        ]
+
+    def validate(self, data):
+        print(data)
+        if data['author'] == data['user']:
+            raise serializers.ValidationError('Нельзя подписаться на себя')
+        return data
 
 
 class SubscriptionReadSerializer(serializers.ModelSerializer):
