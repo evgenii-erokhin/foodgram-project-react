@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              RecipeFavoriteSerializer, RecipeReadSerializer,
@@ -18,6 +19,7 @@ from api.serializers import (FavoriteSerializer, IngredientSerializer,
 from users.models import Subscription
 from recipes.models import (Favorite, Ingredient, Recipe,
                             ShoppingCart, Tag)
+from api.permissions import IsOwnerOrReadOnly
 
 User = get_user_model()
 
@@ -29,6 +31,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     и в "Корзину покупок".
     '''
     pagination_class = PageNumberPagination
+    permission_classes = (IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly)
 
     def get_queryset(self):
         recipes = Recipe.objects.prefetch_related(
