@@ -111,7 +111,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         '''
         ingredient_lst = ShoppingCart.objects.filter(
             user=request.user
-            ).values_list(
+        ).values_list(
             'recipe_id__ingredients__name',
             'recipe_id__ingredients__measurement_unit',
             Sum('recipe_id__ingredients__amount_ingredients__amount'))
@@ -158,7 +158,7 @@ class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @action(detail=True,  methods=['post', 'delete'])
+    @action(detail=True, methods=['post', 'delete'])
     def subscribe(self, request, id):
         '''
         Метод "subscribe" позволяет текущему пользователю
@@ -186,7 +186,7 @@ class CustomUserViewSet(UserViewSet):
             Subscription,
             user=user,
             author=author
-            )
+        )
         subscribe_serializer.delete()
         return Response(
             status=status.HTTP_204_NO_CONTENT)

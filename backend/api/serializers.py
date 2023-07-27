@@ -64,7 +64,7 @@ class IngredientRecipeReadSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='ingredient.name')
     measurement_unit = serializers.CharField(
         source='ingredient.measurement_unit'
-        )
+    )
 
     class Meta:
         model = IngredientRecipes
@@ -114,7 +114,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     ingredients = IngredientRecipeReadSerializer(
         many=True, source='amount_ingredients'
-        )
+    )
     is_favorited = SerializerMethodField()
     is_in_shopping_cart = SerializerMethodField()
 

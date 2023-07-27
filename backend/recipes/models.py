@@ -9,7 +9,7 @@ class Ingredient(models.Model):
     name = models.CharField(
         'Название ингридиента',
         max_length=200,
-        )
+    )
     measurement_unit = models.CharField(
         'Еденицы измерения',
         max_length=200,
@@ -29,7 +29,7 @@ class Tag(models.Model):
         'Название тега',
         max_length=200,
         unique=True,
-        )
+    )
     color = models.CharField(
         'Цвет Тега',
         max_length=7,
