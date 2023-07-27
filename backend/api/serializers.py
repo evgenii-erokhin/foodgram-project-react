@@ -1,13 +1,15 @@
-from api.utils import Base64ImageField
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
-from rest_framework.fields import SerializerMethodField
 from djoser.serializers import UserSerializer
 
-from users.models import Subscription
+from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
+from rest_framework.validators import UniqueTogetherValidator
+
 from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
+from api.utils import Base64ImageField
+from users.models import Subscription
+
 
 User = get_user_model()
 
@@ -31,6 +33,9 @@ class UserSerializer(UserSerializer):
         )
 
     def get_is_subscribed(self, obj):
+        '''
+        Проверяет подписан ли текущий пользователь на автора
+        '''
         user = self.context.get('request').user
         if user is None or user.is_anonymous:
             return False

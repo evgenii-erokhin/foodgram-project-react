@@ -1,25 +1,24 @@
-from django.db.models import Sum
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404, HttpResponse
+from django.db.models import Sum
+from django.shortcuts import HttpResponse, get_object_or_404
 from djoser.views import UserViewSet
 
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import SAFE_METHODS
+from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from api.permissions import IsOwnerOrReadOnly
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              RecipeFavoriteSerializer, RecipeReadSerializer,
                              RecipeWriteSerializer, ShoppingCartSerializer,
                              SubscriptionReadSerializer,
                              SubscriptionSerializer, TagSerializer,
                              UserSerializer)
+from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from users.models import Subscription
-from recipes.models import (Favorite, Ingredient, Recipe,
-                            ShoppingCart, Tag)
-from api.permissions import IsOwnerOrReadOnly
 
 User = get_user_model()
 
@@ -37,10 +36,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipes = Recipe.objects.prefetch_related(
             'amount_ingredients__ingredient', 'tags'
         ).all()
-
         tags_name = self.request.query_params.get('name')
         if tags_name is not None:
-            recipes = recipes.filter(tags__slug=tags_name)
+            recipes = recipes.filter(tags__slug__istartswith=tags_name)
         return recipes
 
     def perform_create(self, serializer):
@@ -104,7 +102,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         shopping_cart.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'],
+            permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request):
         '''
         Метод "download_shopping_cart" позволяет скачать файл
@@ -117,18 +116,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'recipe_id__ingredients__measurement_unit',
             Sum('recipe_id__ingredients__amount_ingredients__amount'))
 
-        shopping_list = ['Список покупок:']
+        shopping_list = ['Список покупок: \n']
         ingredient_lst = set(ingredient_lst)
 
         for ingredient in ingredient_lst:
             name = ingredient[0]
             measurement_unit = ingredient[1]
             amount = ingredient[2]
-            shopping_list.append(f'{name} ({measurement_unit}) - {amount}')
-
-        shopping_lst_convert = '\n'.join(shopping_list)
-
-        response = HttpResponse(shopping_lst_convert,
+            shopping_list.append(f'{name} ({measurement_unit}) - {amount}\n')
+        response = HttpResponse(shopping_list,
                                 content_type='text/plain')
         response['Content-Disposition'] = \
             'attachment; filename="shopping_list.txt"'
@@ -143,9 +139,7 @@ class TagViewSet(viewsets.ModelViewSet):
 
 class IngredientViewSet(viewsets.ModelViewSet):
     '''Вьюсет для работы с ингредиентами'''
-
     serializer_class = IngredientSerializer
-    pagination_class = None
 
     def get_queryset(self):
         queryset = Ingredient.objects.all()
@@ -156,6 +150,11 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class CustomUserViewSet(UserViewSet):
+    '''
+    Вьюсет для работы с пользователями.
+    Позволяет подписаться/отписаться текущему пользователю на других авторов.
+    И позволяет получать список авторов с рецептами на которых он подписан.
+    '''
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
