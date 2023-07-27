@@ -28,7 +28,6 @@ class UserSerializer(UserSerializer):
             'first_name',
             'last_name',
             'is_subscribed'
-
         )
 
     def get_is_subscribed(self, obj):
@@ -45,7 +44,10 @@ class IngredientSerializer(serializers.ModelSerializer):
     '''Сериалайзер для модели Ingredient.'''
     class Meta:
         model = Ingredient
-        fields = '__all__'
+        fields = (
+            'name',
+            'measurement_unit'
+        )
 
 
 class IngredientRecipeReadSerializer(serializers.ModelSerializer):
@@ -61,7 +63,12 @@ class IngredientRecipeReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientRecipes
-        fields = ('id', 'name', 'amount', 'measurement_unit')
+        fields = (
+            'id',
+            'name',
+            'amount',
+            'measurement_unit'
+        )
 
 
 class IngredientRecipeWriteSerializer(serializers.ModelSerializer):
@@ -73,7 +80,10 @@ class IngredientRecipeWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientRecipes
-        fields = ('id', 'amount')
+        fields = (
+            'id',
+            'amount'
+        )
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -82,7 +92,11 @@ class TagSerializer(serializers.ModelSerializer):
     '''
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = (
+            'name',
+            'color',
+            'slug'
+        )
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
