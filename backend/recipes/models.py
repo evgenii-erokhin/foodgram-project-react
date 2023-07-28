@@ -18,6 +18,7 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+        ordering = ['name']
 
     def __str__(self):
         return f'{self.name} - {self.measurement_unit}'
@@ -47,6 +48,7 @@ class Tag(models.Model):
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -132,6 +134,7 @@ class IngredientRecipes(models.Model):
                 name='unique_ingredient'
             )
         ]
+        ordering = ['recipe']
 
     def __str__(self):
         return (f'{self.ingredient.name}, {self.amount}'
@@ -162,6 +165,7 @@ class Favorite(models.Model):
                 name='unique_favourites'
             )
         ]
+        ordering = ['user']
 
     def __str__(self):
         return f'{self.user} добавил в избранное {self.recipe}'
@@ -191,6 +195,7 @@ class ShoppingCart(models.Model):
                 name='unique_shopping_cart'
             )
         ]
+        ordering = ['user']
 
     def __str__(self):
         return f'{self.user} добавил {self.recipe} в корзину покупок '
