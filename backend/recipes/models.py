@@ -1,5 +1,5 @@
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
-from django.core.validators import MinValueValidator
 
 from users.models import User
 
@@ -33,7 +33,10 @@ class Tag(models.Model):
     color = models.CharField(
         'Цвет Тега',
         max_length=7,
-        unique=True
+        unique=True,
+        validators=[RegexValidator(
+            '^#([a-fA-F0-9]{6})',
+            message='Цвет тега должен быть указан в hex формате')]
     )
     slug = models.SlugField(
         'Уникальный слаг',
@@ -86,11 +89,15 @@ class Recipe(models.Model):
                     (1, 'Время приготовления должно быть'
                      'равно хотя бы одной минуте')]
     )
+    pub_date = models.DateTimeField(
+        'Дата и время публикации рецепта',
+        auto_now_add=True
+    )
 
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-        ordering = ['-id']
+        ordering = ['-pub_date']
 
     def __str__(self):
         return self.name

@@ -23,7 +23,7 @@ class TagInline(admin.TabularInline):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'author')
+    list_display = ('id', 'name', 'author', 'pub_date')
     list_filter = ('author', 'name', 'tags')
     exclude = ('tags',)
     inlines = [IngredientRecipeInline, TagInline]
