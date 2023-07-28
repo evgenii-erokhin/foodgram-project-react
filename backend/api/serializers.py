@@ -1,6 +1,6 @@
+
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserSerializer
-
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 from rest_framework.validators import UniqueTogetherValidator
@@ -9,7 +9,6 @@ from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
 from api.utils import Base64ImageField
 from users.models import Subscription
-
 
 User = get_user_model()
 
@@ -151,8 +150,10 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     Сериализатор для модели Recipe.
     Используется для записи рецепта.
     '''
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(),
-                                              many=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True
+    )
     author = UserSerializer(read_only=True)
     ingredients = IngredientRecipeWriteSerializer(many=True)
     image = Base64ImageField()
@@ -279,7 +280,6 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, data):
-        print(data)
         if data['author'] == data['user']:
             raise serializers.ValidationError('Нельзя подписаться на себя')
         return data
