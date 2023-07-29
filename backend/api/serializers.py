@@ -46,9 +46,12 @@ class UserSerializer(UserSerializer):
 
 class IngredientSerializer(serializers.ModelSerializer):
     '''Сериалайзер для модели Ingredient.'''
+    id = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Ingredient
         fields = (
+            'id',
             'name',
             'measurement_unit'
         )
@@ -70,8 +73,8 @@ class IngredientRecipeReadSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
-            'amount',
-            'measurement_unit'
+            'measurement_unit',
+            'amount'
         )
 
 
@@ -91,12 +94,14 @@ class IngredientRecipeWriteSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(read_only=True)
     '''
     Сериалайзер для модели Tag.
     '''
     class Meta:
         model = Tag
         fields = (
+            'id',
             'name',
             'color',
             'slug'
@@ -283,40 +288,16 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         return data
 
 
-class SubscriptionReadSerializer(serializers.ModelSerializer):
+class SubscriptionReadSerializer(UserSerializer):
     '''
     Сериализатор для модели User.
     Используется на отображение необходимых полей при подписке
     '''
-    is_subscribed = SerializerMethodField()
     recipes = RecipeFavoriteSerializer(many=True)
     recipes_count = SerializerMethodField()
 
-    class Meta:
-        model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-            'recipes',
-            'recipes_count'
-        )
-
-    def get_is_subscribed(self, obj):
-        '''
-        Метод который возвращает булево значение,
-        которое показывает подписан ли полльзователь на автора рецепта.
-        '''
-        user = self.context.get('request').user
-        if user is None or user.is_anonymous:
-            return False
-        return Subscription.objects.filter(
-            user=user,
-            author=obj
-        ).exists()
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + ('recipes', 'recipes_count')
 
     def get_recipes_count(self, obj):
         '''Метод возвращает количество рецептов у автора рецептов
