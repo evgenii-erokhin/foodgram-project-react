@@ -1,4 +1,4 @@
-# Учебный проект: Foodgram -- продуктовый помошник
+# Учебный проект: Foodgram - продуктовый помощник
 ### Описание:
 Foodgram это веб сервис с помощью которого, пользователи смогут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список(в формате .txt) продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 ### Используемые технологии:
@@ -34,9 +34,26 @@ python3 -m venv venv
 ```
 source venv/bib/activate
 ```
-3. Перейти в дерикторию `backend` выполнить миграции и создать супер пользователя:
+3. Установоить зависимости:
+```
+pip install -r requirements.txt
+```
+4. Перейти в дерикторию `foodgram/settings.py` заменить настройки базы данных на SQLite:
+```
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+```
+
+5. Перейти в дерикторию `backend` выполнить миграции и создать супер пользователя:
 ```
 cd backend
+```
+```
+python manage.py makemigrations
 ```
 ```
 python manage.py migrate
@@ -44,10 +61,17 @@ python manage.py migrate
 ```
 python manage.py createsuperuser
 ```
-4. Запустить сервер разработки:
+6. Наполниьь базу данных ингредиентами:
+```
+python manage.py import_ingredients_from_csv
+```
+7. Запустить сервер разработки:
 ```
 python manage.py runserver
 ```
+### Подготовка сервера и деплой проекта:
+
+
 ### Контакты:
 <a href="https://t.me/juandart" target="_blank">
 <img src=https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white />
