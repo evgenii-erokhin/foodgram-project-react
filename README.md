@@ -1,4 +1,3 @@
-# praktikum_new_diplom
 # Учебный проект: Foodgram -- продуктовый помошник
 ### Описание:
 Foodgram это веб сервис с помощью которого, пользователи смогут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список(в формате .txt) продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
@@ -50,6 +49,11 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 ### Контакты:
-
+<a href="https://t.me/juandart" target="_blank">
+<img src=https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white />
+</a>
+<a href="mailto:evgeniierokhin@proton.me?">
+<img src=https://img.shields.io/badge/ProtonMail-8B89CC?style=for-the-badge&logo=protonmail&logoColor=white />
+</a>
 
 
