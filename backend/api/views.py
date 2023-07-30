@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
-from django.shortcuts import HttpResponse, get_object_or_404
+from django.shortcuts import HttpResponse
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -11,11 +11,13 @@ from rest_framework.response import Response
 
 from api.permissions import IsOwnerOrReadOnly
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
-                             RecipeFavoriteSerializer, RecipeReadSerializer,
-                             RecipeWriteSerializer, ShoppingCartSerializer,
+                             RecipeReadSerializer,
+                             RecipeWriteSerializer, RecipeFavoriteSerializer,
+                             ShoppingCartSerializer,
                              SubscriptionReadSerializer,
                              SubscriptionSerializer, TagSerializer,
                              UserSerializer)
+from api.utils import create_object, delete_object
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from users.models import Subscription
 
@@ -55,23 +57,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
         в зависимости от метода запроса добавить/удалить
         рецепт в список "Избранное".
         '''
-        user = request.user
-        recipe = get_object_or_404(Recipe, id=pk)
-
         if request.method == 'POST':
-            serializer = FavoriteSerializer(
-                data={'user': user.id, 'recipe': recipe.id})
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            fav_recipe_serializer = RecipeFavoriteSerializer(recipe)
-            return Response(
-                fav_recipe_serializer.data,
-                status=status.HTTP_201_CREATED
+            serializer = create_object(
+                request,
+                pk,
+                FavoriteSerializer,
+                RecipeFavoriteSerializer,
+                Recipe
             )
-
-        favorite_recipe = get_object_or_404(
-            Favorite, user=user, recipe=recipe)
-        favorite_recipe.delete()
+            return Response(
+                    serializer.data,
+                    status=status.HTTP_201_CREATED
+            )
+        delete_object(request, pk, Recipe, Favorite)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post', 'delete'])
@@ -81,24 +79,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
         в зависимости от запроса добавить/удалить ингредиенты
         рецепта в "Корзину покупок".
         '''
-        user = request.user
-        recipe = get_object_or_404(Recipe, id=pk)
-
         if request.method == 'POST':
-            serializer = ShoppingCartSerializer(
-                data={'user': user.id, 'recipe': recipe.id}
+            serializer = create_object(
+                request,
+                pk,
+                ShoppingCartSerializer,
+                RecipeFavoriteSerializer,
+                Recipe
             )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            shopping_cart_serializer = RecipeFavoriteSerializer(recipe)
             return Response(
-                shopping_cart_serializer.data,
-                status=status.HTTP_201_CREATED
+                    serializer.data,
+                    status=status.HTTP_201_CREATED
             )
-
-        shopping_cart = get_object_or_404(
-            ShoppingCart, user=user, recipe=recipe)
-        shopping_cart.delete()
+        delete_object(request, pk, Recipe, ShoppingCart)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'],
@@ -160,36 +153,20 @@ class CustomUserViewSet(UserViewSet):
 
     @action(detail=True, methods=['post', 'delete'])
     def subscribe(self, request, id):
-        '''
-        Метод "subscribe" позволяет текущему пользователю
-        подписаться/отписаться на автора рецепта.
-        '''
-        user = request.user
-        author = get_object_or_404(User, id=id)
         if request.method == 'POST':
-            serializer = SubscriptionSerializer(
-                data={
-                    'user': user.id,
-                    'author': author.id
-                }
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            subscribe_serializer = SubscriptionReadSerializer(
-                author,
-                context={'request': request}
+            serializer = create_object(
+                request,
+                id,
+                SubscriptionSerializer,
+                SubscriptionReadSerializer,
+                User
             )
             return Response(
-                subscribe_serializer.data,
-                status=status.HTTP_201_CREATED)
-        subscribe_serializer = get_object_or_404(
-            Subscription,
-            user=user,
-            author=author
-        )
-        subscribe_serializer.delete()
-        return Response(
-            status=status.HTTP_204_NO_CONTENT)
+                    serializer.data,
+                    status=status.HTTP_201_CREATED
+            )
+        delete_object(request, id, User, Subscription)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get'])
     def subscriptions(self, request):
