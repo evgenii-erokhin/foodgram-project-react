@@ -263,45 +263,6 @@ class ShoppingCartSerializer(FavoriteAndShoppingCartSerializerBase):
     class Meta(FavoriteAndShoppingCartSerializerBase.Meta):
         model = ShoppingCart
 
-# class FavoriteSerializer(serializers.ModelSerializer):
-#     '''
-#     Сериализатор работает с моделью Favorite.
-#     Испльзуется для создание связей избранных рецептов пользователя.
-#     '''
-#     class Meta:
-#         model = Favorite
-#         fields = (
-#             'user',
-#             'recipe'
-#         )
-#         validators = [
-#             UniqueTogetherValidator(
-#                 queryset=Favorite.objects.all(),
-#                 fields=['user', 'recipe'],
-#                 message='Вы уже добавили этот рецепт в избранное'
-#             )
-#         ]
-
-
-# class ShoppingCartSerializer(serializers.ModelSerializer):
-#     '''
-#     Сериализатор работает с моделью ShoppingCart.
-#     Используется для формирования карзины покупок пользователя.
-#     '''
-#     class Meta:
-#         model = ShoppingCart
-#         fields = (
-#             'user',
-#             'recipe'
-#         )
-#         validators = [
-#             UniqueTogetherValidator(
-#                 queryset=ShoppingCart.objects.all(),
-#                 fields=['user', 'recipe'],
-#                 message='Вы уже добавили этот рецепт в корзину покупок'
-#             )
-#         ]
-
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     '''
