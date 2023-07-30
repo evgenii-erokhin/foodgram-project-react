@@ -108,15 +108,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'recipe_id__ingredients__measurement_unit',
             Sum('recipe_id__ingredients__amount_ingredients__amount'))
 
-        shopping_list = ['Список покупок: \n']
+        shopping_list = ['Список покупок:']
         ingredient_lst = set(ingredient_lst)
 
         for ingredient in ingredient_lst:
-            name = ingredient[0]
-            measurement_unit = ingredient[1]
-            amount = ingredient[2]
-            shopping_list.append(f'{name} ({measurement_unit}) - {amount}\n')
-        response = HttpResponse(shopping_list,
+            shopping_list.append('{} ({}) - {}'.format(*ingredient))
+
+        response = HttpResponse('\n'.join(shopping_list),
                                 content_type='text/plain')
         response['Content-Disposition'] = \
             'attachment; filename="shopping_list.txt"'
