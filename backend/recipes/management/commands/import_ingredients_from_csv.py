@@ -1,6 +1,5 @@
 import csv
 
-
 from django.core.management.base import BaseCommand
 
 from recipes.models import Ingredient
@@ -9,7 +8,7 @@ from recipes.models import Ingredient
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        with open('D:/Dev/foodgram-project-react/data/ingredients.csv',
+        with open('../data/ingredients.csv',
                   'r',
                   encoding='utf-8') as f:
             reader = csv.DictReader(f)
