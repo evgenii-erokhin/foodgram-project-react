@@ -12,6 +12,7 @@ djangorestframework-simplejwt==5.2.2
 djoser==2.2.0
 drf-extra-fields==3.6.1
 filetype==1.2.0
+gunicorn==20.1.0
 idna==3.4
 oauthlib==3.2.2
 Pillow==10.0.0
@@ -26,3 +27,4 @@ social-auth-core==4.4.2
 sqlparse==0.4.4
 typing_extensions==4.7.1
 urllib3==2.0.4
+psycopg2-binary==2.9.
