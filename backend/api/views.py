@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.shortcuts import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -17,6 +18,7 @@ from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              SubscriptionReadSerializer,
                              SubscriptionSerializer, TagSerializer,
                              UserSerializer)
+from api.filters import RecipeFilter
 from api.utils import create_object, delete_object
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from users.models import Subscription
@@ -32,14 +34,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     '''
     pagination_class = PageNumberPagination
     permission_classes = (IsOwnerOrReadOnly, IsAuthenticatedOrReadOnly)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeFilter
 
     def get_queryset(self):
         recipes = Recipe.objects.prefetch_related(
             'amount_ingredients__ingredient', 'tags'
         ).all()
-        tags_name = self.request.query_params.get('name')
-        if tags_name is not None:
-            recipes = recipes.filter(tags__slug__istartswith=tags_name)
         return recipes
 
     def perform_create(self, serializer):
@@ -130,6 +131,7 @@ class TagViewSet(viewsets.ModelViewSet):
 
 class IngredientViewSet(viewsets.ModelViewSet):
     '''Вьюсет для работы с ингредиентами'''
+    queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     pagination_class = None
 

@@ -114,13 +114,13 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     Используется на отображение необходимых полей при чтеннии.
     '''
     tags = TagSerializer(many=True, read_only=True)
-    author = UserSerializer()
-    image = Base64ImageField()
+    author = UserSerializer(read_only=True)
+    image = Base64ImageField(read_only=True)
     ingredients = IngredientRecipeReadSerializer(
         many=True, source='amount_ingredients'
     )
-    is_favorited = SerializerMethodField()
-    is_in_shopping_cart = SerializerMethodField()
+    is_favorited = SerializerMethodField(read_only=True)
+    is_in_shopping_cart = SerializerMethodField(read_only=True)
 
     class Meta:
         model = Recipe
@@ -294,8 +294,8 @@ class SubscriptionReadSerializer(UserSerializer):
     Сериализатор для модели User.
     Используется на отображение необходимых полей при подписке
     '''
-    recipes = RecipeFavoriteSerializer(many=True)
-    recipes_count = SerializerMethodField()
+    recipes = RecipeFavoriteSerializer(many=True, read_only=True)
+    recipes_count = SerializerMethodField(read_only=True)
 
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ('recipes', 'recipes_count')
