@@ -125,6 +125,7 @@ class TagViewSet(viewsets.ModelViewSet):
     '''Вьюсет для работы с тегами'''
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    pagination_class = None
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
