@@ -61,7 +61,7 @@ python manage.py migrate
 ```
 python manage.py createsuperuser
 ```
-6. Наполниьь базу данных ингредиентами:
+6. Наполнить базу данных ингредиентами:
 ```
 python manage.py import_ingredients_from_csv
 ```
@@ -70,7 +70,83 @@ python manage.py import_ingredients_from_csv
 python manage.py runserver
 ```
 ### Подготовка сервера и деплой проекта:
+1. В домашней директории сервера поочередно выполните команды для установки **Docker** и **Docker Compose** для Linux.
+```
+sudo apt update
+```
+```
+sudo apt install curl
+```
+```
+curl -fSL https://get.docker.com -o get-docker.sh
+```
+```
+sudo sh ./get-docker.sh
+```
+```
+sudo apt-get install docker-compose-plugin 
+```
+2. Установить **Nginx** и настроить конфигурационный файл **default** так чтобы все запросы проксировались в контейнеры на порт **8000**
+```
+sudo apt install nginx -y 
+```
+```
+sudo nano /etc/nginx/site-enabled/default
+```
+Создайте примерно такую структуру:
+```
+server {
+    server_name xxx.xxx.xx.xxx 
+    xxxxxx.com;
+    server_tokens off;
 
+    location / {
+      proxy_set_header Host $http_host;
+      proxy_pass http://127.0.0.1:8000;
+    }
+}
+
+```
+Где `ххх.ххх.хх.ххх` - это IP вашего сервера.
+
+А `хххххх.com` - домен ваiего сайта.
+
+3. В домашней директории сервера создайте папку `foodgram`.
+4. В корне папки `foodgram` создайте файл **.env** и заполните его по шаблону.
+```
+POSTGRES_USER=<Логин для подключения к БД>
+POSTGRES_PASSWORD=<Ваш пароль>
+POSTGRES_DB=<Имя БД>
+DB_HOST=<Имя контейнера БД>
+DB_PORT=5432
+SECRET_KEY=<50ти символьный ключ>
+DEBUG=False
+ALLOWED_HOSTS=<IP вашего сервера и домен сайта>
+```
+5. В репозиторие в разделе **Settings > Secrets and variables > Action** Добавить следующие "секреты" по шаблону:
+```
+DOCKER_USERNAME <никнейм DockerHub>
+DOCKER_PASSWORD <пароль от DockerHub>
+
+HOST <IP вашего сервера>
+SSH_KEY <Ваш приватный SSH-ключ>
+SSH_PASSPHRASE <Ваш пароль от сервера>
+USER <имя пользователя для подключения к серверу>
+
+TELEGRAM_TO <id вашего телеграм аккаунта>
+TELEGRAM_TOKEN <токен вашего телеграм бота>
+``` 
+6.Запустите workflow выполнив следующие команды:
+```
+git add .
+```
+```
+git commit -m '<текст коммита>'
+```
+```
+git push
+```
+Выполнив эти команды будет запущен тест, далее сбилдятся образы для бекенда, фронтенда, базы данных, и nginx и опубликуются в вашем аккаунте **DockerHub**. После этого будет выполнен автоматический деплой на ваш сервер. В конце в бот в месседжере **Телеграм** придёт уведомление об успешном деплое. 
 
 ### Контакты:
 <a href="https://t.me/juandart" target="_blank">
