@@ -10,15 +10,14 @@ from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
+from api.filters import RecipeFilter
 from api.permissions import IsOwnerOrReadOnly
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
-                             RecipeReadSerializer,
-                             RecipeWriteSerializer, RecipeFavoriteSerializer,
-                             ShoppingCartSerializer,
+                             RecipeFavoriteSerializer, RecipeReadSerializer,
+                             RecipeWriteSerializer, ShoppingCartSerializer,
                              SubscriptionReadSerializer,
                              SubscriptionSerializer, TagSerializer,
                              UserSerializer)
-from api.filters import RecipeFilter
 from api.utils import create_object, delete_object
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from users.models import Subscription
@@ -67,8 +66,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 Recipe
             )
             return Response(
-                    serializer.data,
-                    status=status.HTTP_201_CREATED
+                serializer.data,
+                status=status.HTTP_201_CREATED
             )
         delete_object(request, pk, Recipe, Favorite)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -89,8 +88,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 Recipe
             )
             return Response(
-                    serializer.data,
-                    status=status.HTTP_201_CREATED
+                serializer.data,
+                status=status.HTTP_201_CREATED
             )
         delete_object(request, pk, Recipe, ShoppingCart)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -163,8 +162,8 @@ class CustomUserViewSet(UserViewSet):
                 User
             )
             return Response(
-                    serializer.data,
-                    status=status.HTTP_201_CREATED
+                serializer.data,
+                status=status.HTTP_201_CREATED
             )
         delete_object(request, id, User, Subscription)
         return Response(status=status.HTTP_204_NO_CONTENT)
