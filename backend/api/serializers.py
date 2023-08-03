@@ -174,6 +174,13 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             'cooking_time',
         )
 
+    def validate_ingredients(self, data):
+        if len(data) == 0:
+            raise serializers.ValidationError(
+                'Список ингредиентов не может быть пустым'
+            )
+        return data
+
     def create_ingredients(self, ingredients, recipe):
         '''Метод создания ингредиентов с количеством ингредиентов.'''
         for ingredient in ingredients:
