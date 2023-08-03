@@ -14,7 +14,6 @@ class IngredientAdmin(admin.ModelAdmin):
 
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    extra = 1
 
 
 class TagInline(admin.TabularInline):
