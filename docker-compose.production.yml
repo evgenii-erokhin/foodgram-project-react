@@ -32,6 +32,6 @@ services:
     image: jackdemario/foodgram_gateway
     volumes:
       - static:/staticfiles/
-      - media:/media/
+      - media:/media/    
     ports:
-      - "8000:80"
+      - "80:80"
