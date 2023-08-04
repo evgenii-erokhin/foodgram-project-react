@@ -12,9 +12,8 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name', )
 
 
-class IngredientRecipeInline(admin.StackedInline):
+class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    autocomplete_fields = ('ingredient',)
 
 
 class TagInline(admin.TabularInline):
@@ -26,9 +25,6 @@ class TagInline(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'author', 'pub_date')
     list_filter = ('author', 'name', 'tags')
-    search_fields = (
-        'name', 'cooking_time',
-        'author__email', 'ingredients__name')
     exclude = ('tags',)
     inlines = [IngredientRecipeInline, TagInline]
 
