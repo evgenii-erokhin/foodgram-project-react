@@ -16,7 +16,7 @@ class IngredientAdmin(admin.ModelAdmin):
 class UserForm(forms.ModelForm):
     model = IngredientRecipes
     fields = (
-        'name',
+        'ingredient__name',
         'amount'
     )
 
