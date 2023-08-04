@@ -14,26 +14,17 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name', )
 
 
-class PageFormSet(BaseInlineFormSet):
-
-    def clean(self):
-        super(PageFormSet, self).clean()
-
-        for form in self.forms:
-            if not hasattr(form, 'cleaned_data'):
-                continue
-
-            data = form.cleaned_data
-            curr_instance = form.instance
-            was_read = curr_instance.was_read
-
-            if (data.get('DELETE') and was_read):
-                raise ValidationError('Error')
+class IngredientRecipeForm(BaseInlineFormSet):
+    def _construct_form(self, i, kwargs):
+        form = super(IngredientRecipeForm, self)._construct_form(i, kwargs)
+        if i < 1:
+            form.empty_permitted = False
+        return form
 
 
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    formset = PageFormSet
+    formset = IngredientRecipeForm
 
 
 class TagInline(admin.TabularInline):
