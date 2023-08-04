@@ -15,8 +15,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    formset = IngredientRecipeForm
-
+    
 
 class TagInline(admin.TabularInline):
     model = Recipe.tags.through
@@ -28,6 +27,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'author', 'pub_date')
     list_filter = ('author', 'name', 'tags')
     exclude = ('tags',)
+    formset = IngredientRecipeForm
     inlines = [IngredientRecipeInline, TagInline]
 
 
