@@ -15,7 +15,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    form = IngredientRecipeForm
+    formset = IngredientRecipeForm
 
 
 class TagInline(admin.TabularInline):
