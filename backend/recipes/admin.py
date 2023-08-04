@@ -1,4 +1,6 @@
+from typing import Any, Optional
 from django.contrib import admin
+from django.http.request import HttpRequest
 from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
 
@@ -14,12 +16,16 @@ class IngredientAdmin(admin.ModelAdmin):
 
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    extra = 5
+    extra = 0
+
+    def get_min_num(self, request: HttpRequest, obj: Any | None = ..., **kwargs: Any) -> int | None:
+        return 1
 
 
 class TagInline(admin.TabularInline):
     model = Recipe.tags.through
     extra = 0
+    min_num = 1
 
 
 class RecipeAdmin(admin.ModelAdmin):
