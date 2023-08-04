@@ -20,7 +20,7 @@ class UserForm(forms.Form):
 
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    forms = UserForm
+    form = UserForm
 
 
 class TagInline(admin.TabularInline):
