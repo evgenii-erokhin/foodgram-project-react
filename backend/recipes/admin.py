@@ -33,14 +33,11 @@ class PageFormSet(BaseInlineFormSet):
 
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    min_num = 1
-    extra = 0
+    formset = PageFormSet
 
 
 class TagInline(admin.TabularInline):
     model = Recipe.tags.through
-    min_num = 1
-    extra = 0
 
 
 class RecipeAdmin(admin.ModelAdmin):
