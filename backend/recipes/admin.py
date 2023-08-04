@@ -15,7 +15,12 @@ class IngredientAdmin(admin.ModelAdmin):
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
     extra = 0
-    min_num = 1
+
+    def get_min_num(self, request, obj):
+        min_num = 2
+        if obj and obj.parent:
+            return min_num - 1
+        return min_num
 
 
 class TagInline(admin.TabularInline):
