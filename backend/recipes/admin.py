@@ -14,7 +14,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    extra = 3
+    extra = 0
     min_num = 1
 
 
@@ -28,7 +28,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'author', 'pub_date')
     list_filter = ('author', 'name', 'tags')
     exclude = ('tags',)
-    inlines = (IngredientRecipeInline, TagInline)
+    inlines = [IngredientRecipeInline, TagInline]
 
 
 class ShoppingCartAdmin(admin.ModelAdmin):
