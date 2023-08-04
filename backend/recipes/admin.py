@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django import forms
 from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
 
@@ -12,15 +13,14 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name', )
 
 
+class UserForm(forms.Form):
+    name = forms.CharField()
+    amount = forms.IntegerField()
+
+
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    extra = 0
-
-    def get_min_num(self, request, obj):
-        min_num = 2
-        if obj and obj.parent:
-            return min_num - 1
-        return min_num
+    forms = UserForm
 
 
 class TagInline(admin.TabularInline):
