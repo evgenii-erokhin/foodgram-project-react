@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django import forms
 from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
 
@@ -13,17 +12,8 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name', )
 
 
-class UserForm(forms.ModelForm):
-    model = IngredientRecipes
-    fields = (
-        'ingredient__name',
-        'amount'
-    )
-
-
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    form = UserForm
 
 
 class TagInline(admin.TabularInline):
