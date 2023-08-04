@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.forms import ValidationError
 from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
 from django.forms.models import BaseInlineFormSet
