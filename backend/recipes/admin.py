@@ -18,7 +18,7 @@ class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
     extra = 0
 
-    def get_min_num(self, request: HttpRequest, obj: Any | None = ..., **kwargs: Any) -> int | None:
+    def get_min_num(self, request, obj):
         return 1
 
 
