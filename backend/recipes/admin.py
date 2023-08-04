@@ -1,6 +1,8 @@
 from django.contrib import admin
+from django.forms import ValidationError
 from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
+from django.forms.models import BaseInlineFormSet
 
 
 class FavoriteAdmin(admin.ModelAdmin):
@@ -10,6 +12,23 @@ class FavoriteAdmin(admin.ModelAdmin):
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'measurement_unit')
     list_filter = ('name', )
+
+
+class PageFormSet(BaseInlineFormSet):
+
+    def clean(self):
+        super(PageFormSet, self).clean()
+
+        for form in self.forms:
+            if not hasattr(form, 'cleaned_data'):
+                continue
+
+            data = form.cleaned_data
+            curr_instance = form.instance
+            was_read = curr_instance.was_read
+
+            if (data.get('DELETE') and was_read):
+                raise ValidationError('Error')
 
 
 class IngredientRecipeInline(admin.TabularInline):
