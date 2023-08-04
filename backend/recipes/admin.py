@@ -1,7 +1,6 @@
 from django.contrib import admin
 from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
-from recipes.forms import IngredientRecipeForm
 
 
 class FavoriteAdmin(admin.ModelAdmin):
@@ -15,13 +14,14 @@ class IngredientAdmin(admin.ModelAdmin):
 
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
-    formset = IngredientRecipeForm
+    min_num = 1
+    extra = 0
 
 
 class TagInline(admin.TabularInline):
     model = Recipe.tags.through
-    extra = 0
     min_num = 1
+    extra = 0
 
 
 class RecipeAdmin(admin.ModelAdmin):
