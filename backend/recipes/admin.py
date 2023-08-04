@@ -13,9 +13,12 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name', )
 
 
-class UserForm(forms.Form):
-    name = forms.CharField()
-    amount = forms.IntegerField()
+class UserForm(forms.ModelForm):
+    model = IngredientRecipes
+    fields = (
+        'name',
+        'amount'
+    )
 
 
 class IngredientRecipeInline(admin.TabularInline):
