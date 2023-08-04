@@ -12,8 +12,9 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name', )
 
 
-class IngredientRecipeInline(admin.TabularInline):
+class IngredientRecipeInline(admin.StackedInline):
     model = IngredientRecipes
+    autocomplete_fields = ('ingredient',)
 
 
 class TagInline(admin.TabularInline):
