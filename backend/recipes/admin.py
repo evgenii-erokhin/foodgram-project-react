@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from recipes.forms import NotAllowEmtyForm
 from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
