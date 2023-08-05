@@ -29,11 +29,15 @@ class IngredientRecipeForm(BaseInlineFormSet):
 
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
+    extra = 0
+    min_num = 1
     formset = IngredientRecipeForm
 
 
 class TagInline(admin.TabularInline):
     model = Recipe.tags.through
+    extra = 0
+    min_num = 1
 
 
 class RecipeAdmin(admin.ModelAdmin):
