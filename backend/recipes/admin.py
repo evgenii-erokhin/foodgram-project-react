@@ -22,9 +22,7 @@ class IngredientRecipeForm(BaseInlineFormSet):
         for form in self.forms:
             if not hasattr(form, 'cleaned_data'):
                 continue
-
             data = form.cleaned_data
-
             if (data.get('DELETE')):
                 raise ValidationError('Нельзя удалить все ингредиенты')
 
