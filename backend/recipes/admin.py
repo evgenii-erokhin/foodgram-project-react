@@ -1,8 +1,8 @@
 from django.contrib import admin
-from django.forms import ValidationError
+
+from recipes.forms import NotAllowEmtyForm
 from recipes.models import (Favorite, Ingredient, IngredientRecipes, Recipe,
                             ShoppingCart, Tag)
-from django.forms.models import BaseInlineFormSet
 
 
 class FavoriteAdmin(admin.ModelAdmin):
@@ -14,30 +14,18 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ('name', )
 
 
-class IngredientRecipeForm(BaseInlineFormSet):
-
-    def clean(self):
-        super(IngredientRecipeForm, self).clean()
-
-        for form in self.forms:
-            if not hasattr(form, 'cleaned_data'):
-                continue
-            data = form.cleaned_data
-            if (data.get('DELETE')):
-                raise ValidationError('Нельзя удалить все ингредиенты')
-
-
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipes
     extra = 0
     min_num = 1
-    formset = IngredientRecipeForm
+    formset = NotAllowEmtyForm
 
 
 class TagInline(admin.TabularInline):
     model = Recipe.tags.through
     extra = 0
     min_num = 1
+    formset = NotAllowEmtyForm
 
 
 class RecipeAdmin(admin.ModelAdmin):
