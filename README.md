@@ -43,7 +43,7 @@ python3 -m venv venv
 ```
 source venv/bib/activate
 ```
-3. Установоить зависимости:
+3. Установить зависимости:
 ```
 pip install -r requirements.txt
 ```
