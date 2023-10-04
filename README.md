@@ -100,13 +100,12 @@ sudo apt-get install docker-compose-plugin
 sudo apt install nginx -y 
 ```
 ```
-sudo nano /etc/nginx/site-enabled/default
+sudo nano /etc/nginx/sites-enabled/default
 ```
 Создайте примерно такую структуру:
 ```
 server {
-    server_name xxx.xxx.xx.xxx 
-    xxxxxx.com;
+    server_name xxx.xxx.xx.xxx yyyyyyy.com;
     server_tokens off;
 
     location / {
@@ -118,7 +117,7 @@ server {
 ```
 Где `ххх.ххх.хх.ххх` - это IP вашего сервера.
 
-А `хххххх.com` - домен вашего сайта.
+А `yyyyyyy.com` - домен вашего сайта.
 
 3. В домашней директории сервера создайте папку `foodgram`.
 4. В корне папки `foodgram` создайте файл **.env** и заполните его по шаблону.
