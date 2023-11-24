@@ -19,64 +19,34 @@ Foodgram это веб сервис, с помощью которого, пол�
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 ### Как запустить проект:
-#### API Foodgram локально:
-1. Клонировать репозиторий и перейти в него в командной строке:
+#### Запуск Foodgram локально:
+1. Установите на ваш ПК [Docker](https://www.docker.com/products/docker-desktop/)
+2. В корне папки `foodgram-project-react` создайте файл **.env** и заполните его по шаблону.
 ```
-git@github.com:evgenii-erokhin/foodgram-project-react.git
+POSTGRES_USER=<Логин для подключения к БД>
+POSTGRES_PASSWORD=<Ваш пароль>
+POSTGRES_DB=<Имя БД>
+DB_HOST=<Имя контейнера БД>
+DB_PORT=5432
+SECRET_KEY=<50ти символьный ключ>
+DEBUG=False
+ALLOWED_HOSTS=<IP вашего сервера и домен сайта>
 ```
+3. В терминале, находясь в корневой деректории проекта, выполните комаду по запуску сети контейнеров:
 ```
-cd foodgram-project-react
+docker compose up
 ```
-2. Cоздать и активировать виртуальное окружение:
-
-* Если у вас Windows:
+4. Выполните миграции:
 ```
-python -m venv venv
+docker compose exec backend python manage.py migrate 
 ```
+5. Собирите статику Django:
 ```
-source venv/Scripts/activate
+docker compose exec backend python manage.py collectstatic
 ```
-* Если у вас Linux или macOS:
+6. Скопируйте статику в /backend_static/static/
 ```
-python3 -m venv venv
-```
-```
-source venv/bib/activate
-```
-3. Установить зависимости:
-```
-pip install -r requirements.txt
-```
-4. Перейти в дерикторию `foodgram/settings.py` заменить настройки базы данных на SQLite:
-```
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-```
-
-5. Перейти в дерикторию `backend` выполнить миграции и создать супер пользователя:
-```
-cd backend
-```
-```
-python manage.py makemigrations
-```
-```
-python manage.py migrate
-```
-```
-python manage.py createsuperuser
-```
-6. Наполнить базу данных ингредиентами:
-```
-python manage.py import_ingredients_from_csv
-```
-7. Запустить сервер разработки:
-```
-python manage.py runserver
+docker compose exec backend cp -r /app/collected_static/. /backend_static/static/ 
 ```
 ### Подготовка сервера и деплой проекта:
 1. В домашней директории сервера поочередно выполните команды для установки **Docker** и **Docker Compose** для Linux.
