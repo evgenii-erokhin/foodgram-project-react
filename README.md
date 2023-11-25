@@ -19,9 +19,32 @@ Foodgram это веб сервис, с помощью которого, пол�
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 ### Как запустить проект:
-#### Запуск Foodgram локально:
+#### Запуск проекта Foodgram через Docker локально:
 1. Установите на ваш ПК [Docker](https://www.docker.com/products/docker-desktop/)
-2. В корне папки `foodgram-project-react` создайте файл **.env** и заполните его по шаблону.
+2. Клонируйте репозиторий:
+```
+git clone git@github.com:evgenii-erokhin/foodgram-project-react.git
+```
+3. Создайте и активируйте вирутальное окружение:
+* Если у вас **Windows**:
+```
+python -m venv venv
+```
+```
+source venv/Scripts/activate
+```
+* Если у вас **Linux** или **macOS**:
+```
+python3 -m venv venv
+```
+```
+source venv/bib/activate
+```
+4. Установоить зависимости:
+```
+pip install -r requirements.txt
+```
+5. В корне папки `foodgram-project-react` создайте файл **.env** и заполните его по шаблону.
 ```
 POSTGRES_USER=<Логин для подключения к БД>
 POSTGRES_PASSWORD=<Ваш пароль>
@@ -32,21 +55,29 @@ SECRET_KEY=<50ти символьный ключ>
 DEBUG=False
 ALLOWED_HOSTS=<IP вашего сервера и домен сайта>
 ```
-3. В терминале, находясь в корневой деректории проекта, выполните комаду по запуску сети контейнеров:
+6. В терминале, находясь в корневой директории проекта, выполните комаду по запуску сети контейнеров:
 ```
 docker compose up
 ```
-4. Выполните миграции:
+7. Выполните миграции "внутри" контейнера `beckend` используя команду:
 ```
 docker compose exec backend python manage.py migrate 
 ```
-5. Собирите статику Django:
+8. Собирите статику Django:
 ```
 docker compose exec backend python manage.py collectstatic
 ```
-6. Скопируйте статику в /backend_static/static/
+9. Скопируйте статику в `/backend_static/static/`
 ```
 docker compose exec backend cp -r /app/collected_static/. /backend_static/static/ 
+```
+10. Создайте суперпользователя:
+```
+docker compose exec backend python manage.py createsuperuser
+```
+11. Наполните базу данных ингредиентами:
+```
+docker compose exec backend python manage.py import_ingredients_from_csv
 ```
 ### Подготовка сервера и деплой проекта:
 1. В домашней директории сервера поочередно выполните команды для установки **Docker** и **Docker Compose** для Linux.
